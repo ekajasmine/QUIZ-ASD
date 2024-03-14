@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LENGTH 500
+#define MIN_LENGTH 2023
+
+// Fungsi untuk menampilkan pesan jika panjang teks kurang dari yang ditentukan
+void lessThanRequired(int *lengthOfText) {
+    printf("The length of your text is less than specified, please update your text\n");
+    *lengthOfText = MIN_LENGTH;  // Panjang teks diperbarui menjadi MIN_LENGTH
+}
+
+// Fungsi untuk menampilkan pesan jika panjang teks sama dengan yang ditentukan
+void equalThanRequired() {
+    printf("Thank you, Your text length is correct\n");
+}
+
+// Fungsi untuk menampilkan pesan jika panjang teks lebih dari yang ditentukan
+void moreThanRequired(int *lengthOfText) {
+    printf("Your text is too long, please reduce the text\n");
+    *lengthOfText = MIN_LENGTH;  // Panjang teks diperbarui menjadi MIN_LENGTH
+}
+
+// Fungsi untuk memeriksa apakah panjang teks memenuhi persyaratan
+int checkLengthRequirement(char *text) {
+    int length = strlen(text);  // Menghitung panjang teks
+    if (length < MIN_LENGTH)  // Jika panjang kurang dari yang ditentukan
+        return 0;  // Mengembalikan nilai 0
+    else if (length == MIN_LENGTH)  // Jika panjang sama dengan yang ditentukan
+        return 1;  // Mengembalikan nilai 1
+    else
+        return 2;  // Jika panjang lebih dari yang ditentukan, mengembalikan nilai 2
+}
+
+int main() {
+    int lengthOfText, selectOption;  // Variabel untuk menyimpan panjang teks dan pilihan
+    FILE *fptr = NULL;  // Pointer ke file
+    char text[MAX_LENGTH];  // Array untuk menyimpan teks
+
+    fptr = fopen("file.txt", "r");  // Membuka file untuk dibaca
+
+    if (fptr == NULL) {  // Jika gagal membuka file
+        printf("Error");  // Menampilkan pesan error
+        exit(1);  // Menghentikan program
+    }
+
+    fgets(text, MAX_LENGTH, fptr);  // Membaca teks dari file
+
+    fclose(fptr);  // Menutup file setelah selesai membaca
+
+    selectOption = checkLengthRequirement(text);  // Memeriksa panjang teks
+
+    // Array dari pointer ke fungsi yang akan dipanggil berdasarkan opsi yang dipilih
+    void (*functionPtrs[3])(int *) = {lessThanRequired, equalThanRequired, moreThanRequired};
+    functionPtrs[selectOption](&lengthOfText);  // Memanggil fungsi yang sesuai dengan opsi yang dipilih
+
+    printf("Length Before: %d\n", strlen(text));  // Menampilkan panjang teks sebelum diperbarui
+    printf("The Length is updated to %d\n", lengthOfText);  // Menampilkan panjang teks setelah diperbarui
+
+    return 0;  // Mengakhiri program
+}
